@@ -1,38 +1,34 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
 import { fetchData } from "./api";
 import { Cards, Charts, CountryPicker } from "./components";
 import cvdImg from "./images/image.png";
 import "./App.css";
 
-class App extends React.Component {
-  state = {
-    data: {},
-    country: "",
-  };
+const App = () => {
+  const [data, setData] = useState({});
+  const [country, setCountry] = useState("second");
 
-  countryChangeHandler = async (country) => {
+  const countryChangeHandler = async (country) => {
     const fetchedData = await fetchData(country);
-    console.log(fetchedData);
-    console.log(country);
-    this.setState({ data: fetchedData, country: country });
+    setData(fetchedData);
+    setCountry(country);
   };
 
-  async componentDidMount() {
-    const data = await fetchData();
-    this.setState({ data: data });
-  }
+  useEffect(() => {
+    const fetchAPI = async () => {
+      setData(await fetchData());
+    };
+    fetchAPI();
+  }, []);
 
-  render() {
-    const { data, country } = this.state;
-    return (
-      <div className="container">
-        <img src={cvdImg} alt="" className="cvdImg" />
-        <Cards data={data} />
-        <CountryPicker countryChangeHandler={this.countryChangeHandler} />
-        <Charts data={data} country={country} />
-      </div>
-    );
-  }
-}
+  return (
+    <div className="container">
+      <img src={cvdImg} alt="" className="cvdImg" />
+      <Cards data={data} />
+      <CountryPicker countryChangeHandler={countryChangeHandler} />
+      <Charts data={data} country={country} />
+    </div>
+  );
+};
 
 export default App;

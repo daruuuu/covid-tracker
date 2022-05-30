@@ -26,16 +26,19 @@ ChartJS.register(
   BarElement
 );
 
-const Charts = ({ data: { confirmed, recovered, deaths }, country }) => {
+const Charts = ({ data: { confirmed, recovered, deaths } }, country) => {
   const [dailyData, setDailyData] = useState([]);
 
   useEffect(() => {
     const fetchAPI = async () => {
       setDailyData(await fetchDailyData());
     };
-
     fetchAPI();
   }, []);
+
+  if (!confirmed) {
+    return "Loading...";
+  }
 
   const lineData = {
     labels: dailyData.map(({ date }) => date),
